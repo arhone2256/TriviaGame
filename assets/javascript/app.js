@@ -49,7 +49,20 @@ $(document).ready(function(){
         $('#game').html(`<h4>${question}</h4>${loadChoices(choices, answer)}`);
 
         $('.choice').on('click', function() {
-           
+
+            let chosenAnswer = $(this).attr("data-answer");
+
+            if(chosenAnswer == 'correct'){
+                alert('You are awesome');
+                wins++;
+            }
+            else{
+                alert('Wrong');
+                lost++;
+            }
+
+            nextQuestion();
+            
          });
 
     }
@@ -58,12 +71,19 @@ $(document).ready(function(){
         let result = '';
 
         for ( var i = 0; i < choices.length; i++){
+
+            if(answer == i){
+                answer = "correct"
+            } 
+
+
+            
             result = result + `<p class = "choice" data-answer="${answer}">${choices[i]}</p>`;
         }
         
         return result;
     }
-
+   
 
         // start timer
 // Timer 
@@ -73,22 +93,17 @@ var currentQuestion = 0;
 var score = 0;
 // incremnt wrong question
 var lost =0;
+var wins = 0;
 var timer;
 
 function nextQuestion(){
-
-   if (isQuestionOver){
-   }else
     currentQuestion++;
     loadQuestion();
 }
+
 // Start a 30 second timer 
 function timeUp(){
     clearInterval(timer);
-
-    // Did they answer the question? Did they get it correct?
-
-
     nextQuestion();
 }
 
