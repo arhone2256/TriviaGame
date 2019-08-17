@@ -32,6 +32,7 @@ $(document).ready(function(){
 
     $('#btnStart').on('click', function() {
        $('#btnStart').hide()
+       
 
        // load question(s)
         loadQuestion();
@@ -40,6 +41,7 @@ $(document).ready(function(){
     function loadQuestion(){
         counter = 30;
         timer = setInterval(countDown, 1000);
+        
 
         const question = quizQuestions[currentQuestion].question;//
         const choices = quizQuestions[currentQuestion].choices;//
@@ -53,14 +55,14 @@ $(document).ready(function(){
             let chosenAnswer = $(this).attr("data-answer");
 
             if(chosenAnswer == 'correct'){
-                alert('You are awesome');
+                // alert('You are awesome');
                 wins++;
             }
             else{
-                alert('Wrong');
+                // alert('Wrong');
                 lost++;
             }
-
+            
             nextQuestion();
             
          });
@@ -82,8 +84,23 @@ $(document).ready(function(){
         }
         
         return result;
+
+        
+        
+
     }
-   
+
+    function reset(){
+        currentQuestion = 0;
+        // show start
+        $('#btnStart').show()
+       
+        // clear stats
+        $("#correct").html('Correct: 0');
+        $("#incorrect").html('Incorect: 0');
+        
+        nextQuestion();
+    }
 
         // start timer
 // Timer 
@@ -98,7 +115,19 @@ var timer;
 
 function nextQuestion(){
     currentQuestion++;
-    loadQuestion();
+
+    if(currentQuestion > 4){
+        let outPut = 'Correct: ' + wins;
+        $("#correct").html(outPut);
+
+         outPut = 'Incorrect: ' + lost;
+        $("#incorrect").html(outPut);
+    }
+    else{
+        loadQuestion();
+    }
+    
+    reset
 }
 
 // Start a 30 second timer 
@@ -107,21 +136,24 @@ function timeUp(){
     nextQuestion();
 }
 
+$('#btnRestart').on('click', function() {
+    alert('clicked');
+    $('#btnStart').show()
+ 
+    reset();
+});
+
 function countDown(){
    counter--;
 
-   $("#time").html("Timer: " + counter);
-   if ( counter === 0){
-       timeUp();
-   }
-}
-    });
+    $("#time").html("Timer: " + counter);
+        if ( counter === 0){
+            timeUp();
+        }
+    }
+});
     
-    $('#btnRestart').on('click', function() {
-        alert('clicked');
-        $('#btnStart').show()
-     
-    });
+    
 
 
 
