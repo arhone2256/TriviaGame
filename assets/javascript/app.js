@@ -1,6 +1,8 @@
-
+// does not start until page is ready
 $(document).ready(function(){
 
+    //array of questions and choices and answer.
+    //object is a blueprint of a class
     const quizQuestions = [
         {
             question: "What is the largest bone in the human body?",
@@ -32,6 +34,8 @@ $(document).ready(function(){
 
     $('#btnStart').on('click', function() {
        $('#btnStart').hide()
+
+       timer = setInterval(countDown, 1000);
        
 
        // load question(s)
@@ -40,33 +44,54 @@ $(document).ready(function(){
 
     function loadQuestion(){
         counter = 30;
-        timer = setInterval(countDown, 1000);
         
+        if(quizQuestions.length > currentQuestion){
+            //timer = setInterval(countDown, 1000);
+            let question = quizQuestions[currentQuestion].question;//
+            let choices = quizQuestions[currentQuestion].choices;//
+            let answer = quizQuestions[currentQuestion].correctAnswer;//
+        
+            $('#time').html('timer' + counter)
+            $('#game').html(`<h4>${question}</h4>${loadChoices(choices, answer)}`);
+        
+            $('.choice').on('click', function() {
 
-        const question = quizQuestions[currentQuestion].question;//
-        const choices = quizQuestions[currentQuestion].choices;//
-        const answer = quizQuestions[currentQuestion].correctAnswer;//
+                if(quizQuestions.length -1 > currentQuestion){
+                    let chosenAnswer = $(this).attr("data-answer");
     
-        $('#time').html('timer' + counter)
-        $('#game').html(`<h4>${question}</h4>${loadChoices(choices, answer)}`);
+                    if(chosenAnswer == 'correct'){
+                        // alert('You are awesome');
+                        wins++;
+                    }
+                    else{
+                        // alert('Wrong');
+                        lost++;
+                    }
+                    
+                    nextQuestion();
+                }
+                else{
+                    removeEvent();
+                }
+             });
+        }
+        else{
+            removeEvent();
+        }
+    }
 
-        $('.choice').on('click', function() {
+    function removeEvent(){
+        $('.choice').off('click');
+        ShowStats();
+        
+    }
 
-            let chosenAnswer = $(this).attr("data-answer");
+    function ShowStats(){
+        let outPut = 'Correct: ' + wins;
+        $("#correct").html(outPut);
 
-            if(chosenAnswer == 'correct'){
-                // alert('You are awesome');
-                wins++;
-            }
-            else{
-                // alert('Wrong');
-                lost++;
-            }
-            
-            nextQuestion();
-            
-         });
-
+        outPut = 'Incorrect: ' + lost;
+        $("#incorrect").html(outPut);
     }
 
     function loadChoices(choices, answer){
@@ -91,7 +116,12 @@ $(document).ready(function(){
     }
 
     function reset(){
+
+        clearInterval(timer);
+        didReset = true;
         currentQuestion = 0;
+        lost = 0;
+        wins =0;
         // show start
         $('#btnStart').show()
        
@@ -112,22 +142,20 @@ var score = 0;
 var lost =0;
 var wins = 0;
 var timer;
+var didReset = false;
 
 function nextQuestion(){
-    currentQuestion++;
 
-    if(currentQuestion > 4){
-        let outPut = 'Correct: ' + wins;
-        $("#correct").html(outPut);
-
-         outPut = 'Incorrect: ' + lost;
-        $("#incorrect").html(outPut);
+    if(didReset === false){
+        currentQuestion++;
     }
     else{
-        loadQuestion();
+        didReset = false;
     }
     
-    reset
+    ShowStats();
+
+    loadQuestion();
 }
 
 // Start a 30 second timer 
